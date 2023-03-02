@@ -1,4 +1,4 @@
-package com.adoyo.bluetoothscan.data.chat.presentation
+package com.adoyo.bluetoothscan.presentation
 
 import com.adoyo.bluetoothscan.domain.chat.BluetoothDevice
 

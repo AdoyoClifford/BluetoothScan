@@ -1,4 +1,4 @@
-package com.adoyo.bluetoothscan.data.chat.presentation
+package com.adoyo.bluetoothscan.presentation
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -18,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.adoyo.bluetoothscan.presentation.components.DeviceScreen
 import com.adoyo.bluetoothscan.ui.theme.BluetoothScanTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,33 +34,36 @@ class MainActivity : ComponentActivity() {
     private val bluetoothAdapter by lazy {
         bluetoothManager?.adapter
     }
+
     private val isBluetoothEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled == true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val enableBluetoothLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) {/* */ }
+        ) { /* Not needed */ }
+
         val permissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { perms ->
-            val canEnableBluetooth =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    perms[Manifest.permission.BLUETOOTH_CONNECT] == true
-                } else true
+            val canEnableBluetooth = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                perms[Manifest.permission.BLUETOOTH_CONNECT] == true
+            } else true
 
-            if (canEnableBluetooth && !isBluetoothEnabled) {
+            if(canEnableBluetooth && !isBluetoothEnabled) {
                 enableBluetoothLauncher.launch(
                     Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 )
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_CONNECT
+                    Manifest.permission.BLUETOOTH_CONNECT,
                 )
             )
         }
@@ -69,9 +74,12 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
-
+                    DeviceScreen(
+                        state = state,
+                        onStartScan = viewModel::startScan,
+                        onStopScan = viewModel::stopScan)
                 }
             }
         }

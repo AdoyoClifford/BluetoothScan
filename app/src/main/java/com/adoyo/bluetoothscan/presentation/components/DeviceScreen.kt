@@ -1,4 +1,4 @@
-package com.adoyo.bluetoothscan.data.chat.presentation.components
+package com.adoyo.bluetoothscan.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.adoyo.bluetoothscan.data.chat.presentation.BluetoothUiState
+import androidx.compose.ui.unit.sp
+import com.adoyo.bluetoothscan.presentation.BluetoothUiState
 import com.adoyo.bluetoothscan.domain.chat.BluetoothDevice
 
 @Composable
@@ -27,12 +28,16 @@ fun DeviceScreen(
     onStopScan: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         BluetoothDeviceList(
             pairedDevices = state.pairedDevices,
             scannedDevices = state.scannedDevices,
-            onClick = {}
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -47,7 +52,6 @@ fun DeviceScreen(
         }
     }
 }
-
 @Composable
 fun BluetoothDeviceList(
     pairedDevices: List<BluetoothDevice>,
@@ -55,37 +59,43 @@ fun BluetoothDeviceList(
     onClick: (BluetoothDevice) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier
+    ) {
         item {
             Text(
-                text = "Scanned devices", style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize
-                )
+                text = "Paired Devices",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(16.dp)
             )
         }
         items(pairedDevices) { device ->
-            Text(text = device.name ?: "No name",
+            Text(
+                text = device.name ?: "(No name)",
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onClick(device) }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
+
         item {
             Text(
-                text = "Paired devices", style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize
-                )
+                text = "Scanned Devices",
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(16.dp)
             )
         }
         items(scannedDevices) { device ->
-            Text(text = device.name ?: "No name",
+            Text(
+                text = device.name ?: "(No name)",
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onClick(device) }
-                    .padding(16.dp))
+                    .padding(16.dp)
+            )
         }
     }
-
 }
